@@ -9,7 +9,7 @@ from torchvision import models
 from sklearn.model_selection import train_test_split
 from keys import API_KEY, PROJECT
 
-N_EPOCHS = 10
+N_EPOCHS = 50
 BS = 64
 TRAIN_LOGGING_EACH = 100
 
@@ -21,7 +21,7 @@ def main(lr = 0.0005):
     )  # your credentials
 
     df = pd.read_csv('train.csv')
-    train_df, test_df = train_test_split(df, test_size = 0.15, shuffle = True)
+    train_df, test_df = train_test_split(df, test_size = 0.18, shuffle = True)
 
     model = models.densenet121(pretrained='imagenet')
     model.classifier = torch.nn.Linear(model.classifier.in_features, NUM_CLASSES)
