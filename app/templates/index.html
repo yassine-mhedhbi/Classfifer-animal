@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Animal classifier</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand">Animal Classifier</a>
+        <a class="form-inline" href="https://yassine-mhedhbi.github.io/YassinesBlog/"> About me</a>    
+      </nav>
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            
+          </div>
+          <div class="col-6">
+            <h2 class="display-4">Upload a pic of an animal and maybe we can tell you what it is? </h2>
+            <form action="/", method='post', enctype="multipart/form-data">
+                <label for="img">Select image:</label>
+                <input type="file" id="file" name="file" accept="image/*">
+                <input type="submit">
+              </form>
+              <h3>{{animal}}</h3>
+          </div>
+          <div class="col">
+            
+          </div>
+        </div>
+  </body>
+</html>

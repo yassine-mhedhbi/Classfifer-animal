@@ -1,13 +1,15 @@
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, responses, Request
 from fastapi.logger import logger
+from requests import request
 import uvicorn
 import torch
 from model import Model
 from config import CONFIG
 from utils import predict
+from fastapi.templating import Jinja2Templates
 
 app = FastAPI()
-
+templates = Jinja2Templates(directory="templates")
 
 @app.on_event("startup")
 async def startup_event():
@@ -29,14 +31,18 @@ async def startup_event():
         "model": model
     }
 
-
-@app.post('/image')
-async def inference(file: UploadFile = File(...)):
+@app.get('/', response_class=responses.HTMLResponse)
+def home(request: Request):
+    return templates.TemplateResponse("index.html", {'request': request})
+    
+@app.post('/', response_class=responses.HTMLResponse)
+async def inference(request: Request, file: UploadFile = File(...)):
+    print(file)
     contents = await file.read()
     animal = predict(app.package, contents)
     await file.close()
         
-    return {"message": f"{animal}"}
+    return templates.TemplateResponse("index.html", {'request': request, "animal": animal}) 
 
 
 if __name__ == '__main__':
