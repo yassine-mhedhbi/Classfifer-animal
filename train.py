@@ -7,13 +7,22 @@ import neptune.new as neptune
 from torch.utils.data import DataLoader
 from torchvision import models
 from sklearn.model_selection import train_test_split
-from keys import apikey
+from keys import API_KEY, PROJECT
 
 N_EPOCHS = 10
 BS = 64
 TRAIN_LOGGING_EACH = 100
 
 
+lr = 0.0005
+
+run = neptune.init(
+    project=PROJECT,
+    api_token=API_KEY,
+)  # your credentials
+
+params = {"learning_rate": lr, "optimizer": "Adam"}
+run["parameters"] = params
 
 df = pd.read_csv('train_csv')
 train_df, test_df = train_test_split(df, test_size = 0.15, shuffle = True)
@@ -28,7 +37,7 @@ train_loader = DataLoader(train_dataset, batch_size=BS, shuffle=True, num_worker
 test_loader = DataLoader(test_dataset, batch_size=BS, shuffle=False, num_workers=0)
 
 criterion = torch.nn.BCEWithLogitsLoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=0.0005)
+optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 sheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.5, patience=3)
 
 
@@ -47,6 +56,7 @@ for epoch in range(1, N_EPOCHS + 1):
     tr_loss = train_one_epoch(model, train_loader, criterion, optimizer, TRAIN_LOGGING_EACH)
     train_losses.append(tr_loss)
     tr_loss_logstr = f'Mean train loss: {round(tr_loss,5)}'
+    run[f"train/loss"].log(round(tr_loss,5))
     print(tr_loss_logstr)
     
     valid_loss, valid_f1 = validate(model, test_loader, criterion)  
@@ -58,8 +68,13 @@ for epoch in range(1, N_EPOCHS + 1):
     
     if valid_f1 >= best_model_f1:    
         best_model = model        
-        best_model_f1 = valid_f1        
+        best_model_f1 = valid_f1 
+        run["eval/f1_score"] = best_model_f1       
         best_model_ep = epoch
+        
+        
+        
+run.stop()
 
 
 
