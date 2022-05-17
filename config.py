@@ -4,7 +4,7 @@ import torch
 
 # Config that serves all environment
 GLOBAL_CONFIG = {
-    "MODEL_PATH": "../model/model_weights.pt",
+    "MODEL_PATH": "model/model_weights.pt",
     "USE_CUDE_IF_AVAILABLE": True
 }
 
