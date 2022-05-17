@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd 
 import torch
 from AnimalDataset import AnimalDataset, train_augmentation, val_augmentation, NUM_CLASSES
-from tools import validate, f1_score, fbeta_score, cuda, train_one_epoch, train
+from tools import validate, train_one_epoch
 import neptune.new as neptune
 from torch.utils.data import DataLoader
 from torchvision import models
@@ -16,7 +16,8 @@ TRAIN_LOGGING_EACH = 100
 
 lr = 0.0005
 
-run = neptune.init(
+run = neptune.init_model_version(
+    model="AN-MOD",
     project=PROJECT,
     api_token=API_KEY,
 )  # your credentials
@@ -24,7 +25,7 @@ run = neptune.init(
 params = {"learning_rate": lr, "optimizer": "Adam"}
 run["parameters"] = params
 
-df = pd.read_csv('train_csv')
+df = pd.read_csv('train.csv')
 train_df, test_df = train_test_split(df, test_size = 0.15, shuffle = True)
 
 model = models.densenet121(pretrained='imagenet')

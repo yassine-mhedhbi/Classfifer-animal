@@ -1,5 +1,7 @@
+__pycache__
 .ipynb_checkpoints
 .vscode
-data
-__pycache__
-train.csv
+.neptune
+model/data
+model/keys.py 
+model/train.csv
