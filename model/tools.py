@@ -3,6 +3,7 @@ from torch import mean, ge, no_grad, sigmoid, cat
 def cuda(x):
     return x.cuda(non_blocking=True)
 
+
 def f1_score(y_true, y_pred, threshold=0.5):
     return fbeta_score(y_true, y_pred, 1, threshold)
 
@@ -21,22 +22,16 @@ def fbeta_score(y_true, y_pred, beta, threshold, eps=1e-9):
         (precision*recall).
         div(precision.mul(beta2) + recall + eps).
         mul(1 + beta2))
-    
-    
-    
 
 
 def train_one_epoch(model, train_loader, criterion, optimizer, steps_upd_logging = 250):
     model.train();
-    
     total_loss = 0.0
     loader = iter(train_loader) 
     step = 0
     for features, targets in loader:
-        step += 1
         features, targets = cuda(features), cuda(targets)
         optimizer.zero_grad()
-        
         logits = model(features)
         
         loss = criterion(logits, targets)
@@ -49,6 +44,7 @@ def train_one_epoch(model, train_loader, criterion, optimizer, steps_upd_logging
             logstr = f'Train loss on step {step + 1} was {round(total_loss / (step + 1), 5)}'
             #train_tqdm.set_description(logstr)
             print(logstr)
+        step += 1
         
     return total_loss / (step + 1)
 
